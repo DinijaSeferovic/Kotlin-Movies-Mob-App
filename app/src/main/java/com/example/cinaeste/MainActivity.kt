@@ -6,6 +6,7 @@ import android.app.UiModeManager.MODE_NIGHT_YES
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var favoriteMoviesAdapter: MovieListAdapter
     private lateinit var recentMovies: RecyclerView
     private lateinit var recentMoviesAdapter: MovieListAdapter
+    private lateinit var searchText: EditText
     private var movieListViewModel =  MovieListViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         favoriteMovies = findViewById(R.id.favoriteMovies)
         recentMovies = findViewById(R.id.recentMovies)
+        searchText = findViewById(R.id.searchText)
         favoriteMovies.layoutManager = LinearLayoutManager(
             this,
             LinearLayoutManager.HORIZONTAL,
@@ -45,6 +48,9 @@ class MainActivity : AppCompatActivity() {
         recentMovies.adapter = recentMoviesAdapter
         favoriteMoviesAdapter.updateMovies(movieListViewModel.getFavoriteMovies())
         recentMoviesAdapter.updateMovies(movieListViewModel.getRecentMovies())
+
+        if(intent?.action == Intent.ACTION_SEND && intent?.type == "text/plain")
+            handleSendText(intent)
     }
 
     private fun showMovieDetails(movie: Movie) {
@@ -52,5 +58,11 @@ class MainActivity : AppCompatActivity() {
             putExtra("movie_title", movie.title)
         }
         startActivity(intent)
+    }
+
+    private fun handleSendText(intent: Intent) {
+        intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+            searchText.setText(it)
+        }
     }
 }
