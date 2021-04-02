@@ -1,6 +1,8 @@
 package com.example.cinaeste
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
@@ -26,6 +28,11 @@ class MovieDetailActivity : AppCompatActivity() {
         genre = findViewById(R.id.movie_genre)
         poster = findViewById(R.id.movie_poster)
         website = findViewById(R.id.movie_website)
+
+        website.setOnClickListener{
+            showWebsite()
+        }
+
         val extras = intent.extras
         if (extras != null) {
             movie = movieDetailViewModel.getMovieByTitle(extras.getString("movie_title",""))
@@ -46,5 +53,17 @@ class MovieDetailActivity : AppCompatActivity() {
         if (id===0) id=context.getResources()
                 .getIdentifier("picture1", "drawable", context.getPackageName())
         poster.setImageResource(id)
+    }
+
+
+
+    private fun showWebsite(){
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_VIEW
+            setData(Uri.parse(movie.homepage))
+        }
+        if (sendIntent.resolveActivity(packageManager) != null) {
+            startActivity(sendIntent)
+        }
     }
 }
