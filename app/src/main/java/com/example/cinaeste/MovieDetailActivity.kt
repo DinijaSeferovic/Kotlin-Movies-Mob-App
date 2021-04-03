@@ -63,8 +63,6 @@ class MovieDetailActivity : AppCompatActivity() {
         poster.setImageResource(id)
     }
 
-
-
     private fun showWebsite(){
         val sendIntent = Intent().apply {
             action = Intent.ACTION_VIEW
@@ -74,7 +72,6 @@ class MovieDetailActivity : AppCompatActivity() {
             startActivity(sendIntent)
         }
     }
-
 
     private fun youtubeSearch(){
         val intent = Intent(Intent.ACTION_SEARCH).apply {
