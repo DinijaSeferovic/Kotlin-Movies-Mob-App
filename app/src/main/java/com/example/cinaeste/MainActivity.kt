@@ -3,7 +3,9 @@
 package com.example.cinaeste
 
 import android.app.UiModeManager.MODE_NIGHT_YES
+import android.content.BroadcastReceiver
 import android.content.Intent
+import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
@@ -22,6 +24,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recentMoviesAdapter: MovieListAdapter
     private lateinit var searchText: EditText
     private var movieListViewModel =  MovieListViewModel()
+    private val br: BroadcastReceiver = ConnectivityBroadcastReceiver()
+    private val filter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,5 +68,16 @@ class MainActivity : AppCompatActivity() {
         intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
             searchText.setText(it)
         }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(br, filter)
+    }
+
+    override fun onPause() {
+        unregisterReceiver(br)
+        super.onPause()
     }
 }

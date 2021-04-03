@@ -23,20 +23,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@RunWith(AndroidJUnit4::class)
 class IntentInstrumentedTest {
     @get:Rule
     var intentsRule: IntentsTestRule<MovieDetailActivity> = IntentsTestRule(MovieDetailActivity::class.java,false,false)
-
-    @Test
-    fun testDetailActivityInstantiation(){
-        val pokreniDetalje: Intent = Intent(MovieDetailActivity::javaClass.name)
-        pokreniDetalje.putExtra("movie_title","In time")
-        intentsRule.launchActivity(pokreniDetalje)
-        onView(withId(R.id.movie_title)).check(matches(withText("In time")))
-        onView(withId(R.id.movie_genre)).check(matches(withText("scifi")))
-        onView(withId(R.id.movie_overview)).check(matches(withSubstring("where people stop aging")))
-        onView(withId(R.id.movie_poster)).check(matches(withImage(R.drawable.scifi)))
-    }
 
     fun withImage(@DrawableRes id: Int) = object : TypeSafeMatcher<View>(){
         override fun describeTo(description: Description) {
@@ -51,14 +41,48 @@ class IntentInstrumentedTest {
 
     }
 
+    @Test
+    fun testDetailActivityInstantiation(){
+        val pokreniDetalje: Intent = Intent(MovieDetailActivity::javaClass.name)
+        pokreniDetalje.putExtra("movie_title","In time")
+        intentsRule.launchActivity(pokreniDetalje)
+        onView(withId(R.id.movie_title)).check(matches(withText("In time")))
+        onView(withId(R.id.movie_genre)).check(matches(withText("scifi")))
+        onView(withId(R.id.movie_overview)).check(matches(withSubstring("where people stop aging")))
+        onView(withId(R.id.movie_poster)).check(matches(withImage(R.drawable.scifi)))
+
+    }
 
     @Test
     fun testLinksIntent(){
         val pokreniDetalje: Intent = Intent(MovieDetailActivity::javaClass.name)
-        pokreniDetalje.putExtra("movie_title","In time")
+        pokreniDetalje.putExtra("movie_title","In  time")
         intentsRule.launchActivity(pokreniDetalje)
         onView(withId(R.id.movie_website)).perform(click())
         intended(hasAction(Intent.ACTION_VIEW))
     }
 
+    //ZSR
+    @Test
+    fun testLayoutDetailsActivity(){
+        val pokreniDetalje: Intent = Intent(MovieDetailActivity::javaClass.name)
+        pokreniDetalje.putExtra("movie_title","In time")
+        intentsRule.launchActivity(pokreniDetalje)
+        onView(withId(R.id.movie_poster)).check(isCompletelyLeftOf(withId(R.id.movie_title)))
+        onView(withId(R.id.movie_release_date)).check(isCompletelyBelow(withId(R.id.movie_title)))
+        onView(withId(R.id.movie_release_date)).check(isCompletelyRightOf(withId(R.id.movie_poster)))
+        onView(withId(R.id.movie_genre)).check(isCompletelyBelow(withId(R.id.movie_release_date)))
+        onView(withId(R.id.movie_genre)).check(isLeftAlignedWith(withId(R.id.movie_release_date)))
+        onView(withId(R.id.movie_website)).check(isCompletelyBelow(withId(R.id.movie_poster)))
+        onView(withId(R.id.movie_overview)).check(isCompletelyBelow(withId(R.id.movie_website))).check(isLeftAlignedWith(withId(R.id.movie_website)))
+    }
+
+    @Test
+    fun testYoutubeAction(){
+        val pokreniDetalje: Intent = Intent(MovieDetailActivity::javaClass.name)
+        pokreniDetalje.putExtra("movie_title","In time")
+        intentsRule.launchActivity(pokreniDetalje)
+        onView(withId(R.id.movie_title)).perform(click())
+        intended(hasPackage("com.google.android.youtube"))
+    }
 }
