@@ -9,11 +9,9 @@ import androidx.annotation.DrawableRes
 import androidx.core.graphics.drawable.toBitmap
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.PositionAssertions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.*
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -44,45 +42,21 @@ class IntentInstrumentedTest {
     @Test
     fun testDetailActivityInstantiation(){
         val pokreniDetalje: Intent = Intent(MovieDetailActivity::javaClass.name)
-        pokreniDetalje.putExtra("movie_title","In time")
+        pokreniDetalje.putExtra("movie_title","Pulp Fiction")
         intentsRule.launchActivity(pokreniDetalje)
-        onView(withId(R.id.movie_title)).check(matches(withText("In time")))
-        onView(withId(R.id.movie_genre)).check(matches(withText("scifi")))
-        onView(withId(R.id.movie_overview)).check(matches(withSubstring("where people stop aging")))
-        onView(withId(R.id.movie_poster)).check(matches(withImage(R.drawable.scifi)))
+        onView(withId(R.id.movie_title)).check(matches(withText("Pulp Fiction")))
+        onView(withId(R.id.movie_genre)).check(matches(withText("crime")))
+        onView(withId(R.id.movie_overview)).check(matches(withSubstring("pair of diner bandits")))
+        onView(withId(R.id.movie_poster)).check(matches(withImage(R.drawable.crime)))
 
     }
 
     @Test
     fun testLinksIntent(){
         val pokreniDetalje: Intent = Intent(MovieDetailActivity::javaClass.name)
-        pokreniDetalje.putExtra("movie_title","In  time")
+        pokreniDetalje.putExtra("movie_title","Pulp Fiction")
         intentsRule.launchActivity(pokreniDetalje)
         onView(withId(R.id.movie_website)).perform(click())
         intended(hasAction(Intent.ACTION_VIEW))
-    }
-
-    //ZSR
-    @Test
-    fun testLayoutDetailsActivity(){
-        val pokreniDetalje: Intent = Intent(MovieDetailActivity::javaClass.name)
-        pokreniDetalje.putExtra("movie_title","In time")
-        intentsRule.launchActivity(pokreniDetalje)
-        onView(withId(R.id.movie_poster)).check(isCompletelyLeftOf(withId(R.id.movie_title)))
-        onView(withId(R.id.movie_release_date)).check(isCompletelyBelow(withId(R.id.movie_title)))
-        onView(withId(R.id.movie_release_date)).check(isCompletelyRightOf(withId(R.id.movie_poster)))
-        onView(withId(R.id.movie_genre)).check(isCompletelyBelow(withId(R.id.movie_release_date)))
-        onView(withId(R.id.movie_genre)).check(isLeftAlignedWith(withId(R.id.movie_release_date)))
-        onView(withId(R.id.movie_website)).check(isCompletelyBelow(withId(R.id.movie_poster)))
-        onView(withId(R.id.movie_overview)).check(isCompletelyBelow(withId(R.id.movie_website))).check(isLeftAlignedWith(withId(R.id.movie_website)))
-    }
-
-    @Test
-    fun testYoutubeAction(){
-        val pokreniDetalje: Intent = Intent(MovieDetailActivity::javaClass.name)
-        pokreniDetalje.putExtra("movie_title","In time")
-        intentsRule.launchActivity(pokreniDetalje)
-        onView(withId(R.id.movie_title)).perform(click())
-        intended(hasPackage("com.google.android.youtube"))
     }
 }

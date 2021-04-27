@@ -1,6 +1,7 @@
 package com.example.cinaeste.view
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +11,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cinaeste.R
 import com.example.cinaeste.data.Movie
 
+
 class MovieListAdapter(
-        private var movies: List<Movie>,
-        private val onItemClicked: (movie:Movie) -> Unit) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>() {
+    private var movies: List<Movie>,
+    private val onItemClicked: (movie:Movie,view1:View,view2:View) -> Unit
+) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val view = LayoutInflater
-                .from(parent.context)
-                .inflate(R.layout.item_movie, parent, false)
+            .from(parent.context)
+            .inflate(R.layout.item_movie, parent, false)
         return MovieViewHolder(view)
     }
     override fun getItemCount(): Int = movies.size
@@ -28,10 +32,11 @@ class MovieListAdapter(
         var id: Int = context.getResources()
             .getIdentifier(genreMatch, "drawable", context.getPackageName())
         if (id===0) id=context.getResources()
-            .getIdentifier("pic1", "drawable", context.getPackageName())
+            .getIdentifier("picture1", "drawable", context.getPackageName())
         holder.movieImage.setImageResource(id)
-        //holder.itemView.setOnClickListener{ onItemClicked(movies[position]) }
-        holder.itemView.setOnClickListener{ onItemClicked(movies[position]) }
+
+        holder.itemView.setOnClickListener{ onItemClicked(movies[position],holder.movieImage,holder.movieTitle) }
+
     }
     fun updateMovies(movies: List<Movie>) {
         this.movies = movies
@@ -40,5 +45,6 @@ class MovieListAdapter(
     inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val movieImage: ImageView = itemView.findViewById(R.id.movieImage)
         val movieTitle: TextView = itemView.findViewById(R.id.movieTitle)
+
     }
 }

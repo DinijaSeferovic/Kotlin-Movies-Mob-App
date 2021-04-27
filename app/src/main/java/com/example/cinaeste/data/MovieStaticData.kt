@@ -36,10 +36,10 @@ fun recentMovies(): List<Movie> {
 }
 
     fun movieActors(): Map<String, List<String>> {
-        return mapOf<String, List<String>>("In Time" to listOf("Justin Timberlake", "Olivia Wilde", "Bruce Willis", "Johnny Galecki", "Colin McGurk"), "Imitation game" to listOf("Keira Knightley", "Benedict Cumberbatch", "Matthew Goode"))
+        return mapOf<String, List<String>>("In time" to listOf("Justin Timberlake", "Olivia Wilde", "Bruce Willis", "Johnny Galecki", "Colin McGurk"), "Imitation game" to listOf("Keira Knightley", "Benedict Cumberbatch", "Matthew Goode"))
     }
 
     fun similarMovies(): Map<String, List<String>> {
-        return mapOf<String, List<String>>("Pulp Fiction" to listOf("Fight Club", "Inception", "Se7en"), "Pride and prejudice" to listOf("Jane Eyre", "The Notebook", "Atonement"))
+        return mapOf<String, List<String>>("In time" to listOf("Anon", "Inception", "Elysium"), "Imitation game" to listOf("Enigma", "A Beautiful Mind", "The Theory of Everything"))
     }
 
