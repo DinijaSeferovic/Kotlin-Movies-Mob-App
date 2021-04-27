@@ -12,8 +12,7 @@ import com.example.cinaeste.data.Movie
 
 class MovieListAdapter(
         private var movies: List<Movie>,
-        private val onItemClicked: (movie:Movie) -> Unit
-) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>() {
+        private val onItemClicked: (movie:Movie) -> Unit) : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val view = LayoutInflater
                 .from(parent.context)

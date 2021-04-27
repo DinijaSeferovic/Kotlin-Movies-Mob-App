@@ -2,19 +2,19 @@
 
 package com.example.cinaeste
 
-import android.app.UiModeManager.MODE_NIGHT_YES
+import FavoriteMoviesFragment
+import RecentMoviesFragment
+import SearchFragment
 import android.content.BroadcastReceiver
 import android.content.Intent
 import android.content.IntentFilter
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cinaeste.data.Movie
-import com.example.cinaeste.view.FavoriteMoviesFragment
 import com.example.cinaeste.view.MovieListAdapter
 import com.example.cinaeste.viewmodel.MovieListViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -111,7 +111,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private fun openFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.container, fragment)
@@ -128,4 +127,6 @@ class MainActivity : AppCompatActivity() {
         unregisterReceiver(br)
         super.onPause()
     }
+
+
 }

@@ -1,5 +1,3 @@
-package com.example.cinaeste.view
-
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cinaeste.MovieDetailActivity
 import com.example.cinaeste.R
 import com.example.cinaeste.data.Movie
+import com.example.cinaeste.view.MovieListAdapter
 import com.example.cinaeste.viewmodel.MovieListViewModel
+
 
 class FavoriteMoviesFragment : Fragment() {
     private lateinit var favoriteMovies: RecyclerView
