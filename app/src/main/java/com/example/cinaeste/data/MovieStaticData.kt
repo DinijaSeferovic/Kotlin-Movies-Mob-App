@@ -1,5 +1,7 @@
 package com.example.cinaeste.data
 
+import com.example.cinaeste.data.model.Movie
+
 fun favoriteMovies(): List<Movie> {
     return listOf(
             Movie(1, "In time",

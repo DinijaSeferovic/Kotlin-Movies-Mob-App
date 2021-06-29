@@ -8,21 +8,16 @@ import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.cinaeste.BuildConfig
-import com.example.cinaeste.MainActivity
 import com.example.cinaeste.MovieDetailResultActivity
-import com.example.cinaeste.data.ApiAdapter
-import com.example.cinaeste.data.Movie
+import com.example.cinaeste.data.api.ApiAdapter
+import com.example.cinaeste.data.model.Movie
 import kotlinx.coroutines.*
 import org.json.JSONException
-import org.json.JSONObject
 import java.io.IOException
-import java.net.HttpURLConnection
 import java.net.MalformedURLException
-import java.net.URL
 
 class LatestMovieService : Service() {
     private var wakeLock: PowerManager.WakeLock? = null

@@ -1,7 +1,6 @@
 package com.example.cinaeste
 
-import android.telecom.Call.Details.hasProperty
-import com.example.cinaeste.data.Movie
+import com.example.cinaeste.data.model.Movie
 import com.example.cinaeste.data.MovieRepository
 
 import org.hamcrest.CoreMatchers.`is` as Is

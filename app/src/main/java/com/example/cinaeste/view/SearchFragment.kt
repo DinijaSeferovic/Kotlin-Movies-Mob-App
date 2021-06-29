@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cinaeste.MovieDetailActivity
 import com.example.cinaeste.R
-import com.example.cinaeste.data.Movie
+import com.example.cinaeste.data.model.Movie
 import com.example.cinaeste.viewmodel.MovieListViewModel
 
 class SearchFragment : Fragment() {
@@ -65,7 +65,7 @@ class SearchFragment : Fragment() {
         toast.show()
     }
 
-    private fun showMovieDetails(movie: Movie, view1: View,view2:View) {
+    private fun showMovieDetails(movie: Movie, view1: View, view2:View) {
         val intent = Intent(activity, MovieDetailActivity::class.java).apply {
             putExtra("movie_id", movie.id)
         }

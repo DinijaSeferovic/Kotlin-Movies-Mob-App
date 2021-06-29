@@ -9,10 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cinaeste.R
-import com.example.cinaeste.data.Movie
+import com.example.cinaeste.data.model.Movie
 import com.example.cinaeste.viewmodel.MovieDetailViewModel
 
-class SimilarFragment(movieName: String, movieId: Long?): Fragment() {
+class SimilarFragment(movieName: String, movieId: Long?,favourite:Boolean): Fragment() {
+    private var favourite = favourite
     private var movieName:String = movieName
     private var movieId:Long? = movieId
 
@@ -32,8 +33,13 @@ class SimilarFragment(movieName: String, movieId: Long?): Fragment() {
         movieRV.layoutManager = LinearLayoutManager(activity)
         actorsRVSimpleSimilarAdapter = SimpleSimilarStringAdapter(movieList)
         movieRV.adapter = actorsRVSimpleSimilarAdapter
-        movieId?.let { movieDetailViewModel.getSimilarMoviesById(it,onSuccess = ::onSuccess,
-            onError = ::onError) }
+        if(favourite){
+            movieId?.let { movieDetailViewModel.getSimilarMoviesByIdDB(requireContext(),it,onSuccess = ::onSuccess, onError = ::onError) }
+        }else{
+            movieId?.let { movieDetailViewModel.getSimilarMoviesById(it,onSuccess = ::onSuccess,
+                onError = ::onError) }
+        }
+
         return view
     }
 

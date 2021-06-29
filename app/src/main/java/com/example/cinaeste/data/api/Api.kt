@@ -1,6 +1,10 @@
-package com.example.cinaeste.data
+package com.example.cinaeste.data.api
 
 import com.example.cinaeste.BuildConfig
+import com.example.cinaeste.data.response.GetCastResponse
+import com.example.cinaeste.data.response.GetMoviesResponse
+import com.example.cinaeste.data.response.GetSimilarResponse
+import com.example.cinaeste.data.model.Movie
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.GET

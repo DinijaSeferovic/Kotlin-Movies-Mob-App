@@ -1,4 +1,4 @@
-package com.example.cinaeste.data
+package com.example.cinaeste.data.api
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

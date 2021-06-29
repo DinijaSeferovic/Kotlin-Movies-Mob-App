@@ -1,7 +1,14 @@
 package com.example.cinaeste.viewmodel
 
+import android.content.Context
 import android.util.Log
 import com.example.cinaeste.data.*
+import com.example.cinaeste.data.model.Cast
+import com.example.cinaeste.data.model.Movie
+import com.example.cinaeste.data.repository.ActorMovieRepository
+import com.example.cinaeste.data.repository.MovieRepository
+import com.example.cinaeste.data.response.GetCastResponse
+import com.example.cinaeste.data.response.GetSimilarResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -14,8 +21,6 @@ class MovieDetailViewModel(
 
     fun getMovieByTitle(name:String):Movie{
         var movies: ArrayList<Movie> = arrayListOf()
-        movies.addAll(MovieRepository.getRecentMovies())
-        movies.addAll(MovieRepository.getFavoriteMovies())
         val movie= movies.find { movie -> name.equals(movie.title) }
         return movie?:Movie(0,"Test","Test","Test","Test","Test","Test")
     }
@@ -39,7 +44,16 @@ class MovieDetailViewModel(
             }
         }
     }
-
+    fun getSimilarMoviesByIdDB(context: Context,id: Long, onSuccess: (movies: List<Movie>) -> Unit,
+                               onError: () -> Unit){
+        scope.launch{
+            val result = MovieRepository.getSimilarMoviesDB(context,id)
+            when (result) {
+                is List<*> -> onSuccess?.invoke(result)
+                else-> onError?.invoke()
+            }
+        }
+    }
     fun getActorsById(query: Long, onSuccess: (actors: List<Cast>) -> Unit,
                       onError: () -> Unit){
         scope.launch{
@@ -50,7 +64,52 @@ class MovieDetailViewModel(
             }
         }
     }
+    fun getActorsByIdDB(context: Context, id: Long, onSuccess: (actors: List<Cast>) -> Unit,
+                        onError: () -> Unit){
+        scope.launch{
+            val result = MovieRepository.getCastDB(context,id)
+            when (result) {
+                is List<*> -> onSuccess?.invoke(result)
+                else-> onError?.invoke()
+            }
+        }
+    }
+    fun writeDB(context: Context, movie:Movie, onSuccess: (movies: String) -> Unit,
+                onError: () -> Unit){
+        scope.launch{
+            val result = MovieRepository.writeFavorite(context,movie)
+            when (result) {
+                is String -> onSuccess?.invoke(result)
+                else-> onError?.invoke()
+            }
+        }
+    }
+    fun deleteDB(context: Context, movie:Movie, onSuccess: (poruka: String) -> Unit, onError: () -> Unit){
+        scope.launch {
+            val result = MovieRepository.deleteMovie(context,movie)
+            when (result) {
+                is String -> onSuccess?.invoke(result)
+                else-> onError?.invoke()
+            }
+        }
+    }
 
+    fun getMovieFromDB(context: Context, id:Long, onSuccess: (movies: Movie) -> Unit,
+                       onError: () -> Unit){
+
+        // Create a new coroutine on the UI thread
+        scope.launch{
+
+            // Make the network call and suspend execution until it finishes
+            val result = MovieRepository.getMovieDB(context,id)
+
+            // Display result of the network request to the user
+            when (result) {
+                is Movie -> onSuccess?.invoke(result)
+                else-> onError?.invoke()
+            }
+        }
+    }
 
     fun getMovie(query: Long, onSuccess: (movies: Movie) -> Unit,
                  onError: () -> Unit){

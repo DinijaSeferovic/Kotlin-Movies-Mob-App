@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cinaeste.data.Movie
+import com.example.cinaeste.data.model.Movie
 
 class SimpleSimilarStringAdapter(list: List<Movie>) :RecyclerView.Adapter<SimpleSimilarStringAdapter.SimpleViewHolder>() {
 

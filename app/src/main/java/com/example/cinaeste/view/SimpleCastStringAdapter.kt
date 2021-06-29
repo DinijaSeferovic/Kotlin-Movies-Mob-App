@@ -5,8 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cinaeste.data.Cast
-import com.example.cinaeste.data.Movie
+import com.example.cinaeste.data.model.Cast
 
 class SimpleCastStringAdapter(list: List<Cast>) :RecyclerView.Adapter<SimpleCastStringAdapter.SimpleViewHolder>() {
 

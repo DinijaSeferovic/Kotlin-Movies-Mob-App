@@ -4,13 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.example.cinaeste.data.Movie
+import com.example.cinaeste.data.model.Movie
 import com.example.cinaeste.view.ActorsFragment
 import com.example.cinaeste.view.SimilarFragment
 import com.example.cinaeste.viewmodel.MovieDetailViewModel
@@ -21,7 +23,7 @@ class MovieDetailActivity : AppCompatActivity() {
 
     private var movieDetailViewModel =  MovieDetailViewModel()
     private lateinit var bottomNavigation: BottomNavigationView
-    private  var movie=Movie(0,"Test","Test","Test","Test","Test","Test")
+    private  var movie= Movie(0,"Test","Test","Test","Test","Test","Test")
     private lateinit var title : TextView
     private lateinit var overview : TextView
     private lateinit var releaseDate : TextView
@@ -30,18 +32,30 @@ class MovieDetailActivity : AppCompatActivity() {
     private lateinit var poster : ImageView
     private lateinit var backdrop : ImageView
     private lateinit var shareButton : FloatingActionButton
+    private lateinit var addFavorite : Button
+    private lateinit var deleteFavorite : Button
     private val posterPath = "https://image.tmdb.org/t/p/w780"
     private val backdropPath = "https://image.tmdb.org/t/p/w500"
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when(item.itemId){
             R.id.actorsItem -> {
-                var actorsFragment = ActorsFragment(movie.title,movie.id)
+                var actorsFragment:ActorsFragment
+                if(addFavorite.visibility==View.GONE){
+                    actorsFragment = ActorsFragment(movie.title,movie.id,true)
+                } else{
+                    actorsFragment = ActorsFragment(movie.title,movie.id,false)
+                }
                 openFragment(actorsFragment)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.similarMItem -> {
-                var similarFragment = SimilarFragment(movie.title,movie.id)
+                var similarFragment:SimilarFragment
+                if(addFavorite.visibility==View.GONE) {
+                    similarFragment = SimilarFragment(movie.title, movie.id, true)
+                }else{
+                    similarFragment  = SimilarFragment(movie.title,movie.id, false)
+                }
                 openFragment(similarFragment)
                 return@OnNavigationItemSelectedListener true
             }
@@ -56,12 +70,12 @@ class MovieDetailActivity : AppCompatActivity() {
         title = findViewById(R.id.movie_title)
         overview = findViewById(R.id.movie_overview)
         releaseDate = findViewById(R.id.movie_release_date)
-        //genre = findViewById(R.id.movie_genre)
         poster = findViewById(R.id.movie_poster)
         website = findViewById(R.id.movie_website)
         shareButton = findViewById(R.id.shareButton)
         backdrop = findViewById(R.id.movie_backdrop)
-
+        addFavorite = findViewById(R.id.favorites)
+        deleteFavorite = findViewById(R.id.delete)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         website.setOnClickListener{
@@ -73,6 +87,13 @@ class MovieDetailActivity : AppCompatActivity() {
         shareButton.setOnClickListener{
             shareOverview()
         }
+
+        addFavorite.setOnClickListener{
+            writeDB()
+        }
+        deleteFavorite.setOnClickListener{
+            deleteDB()
+        }
         val extras = intent.extras
 
         if (extras != null) {
@@ -80,16 +101,22 @@ class MovieDetailActivity : AppCompatActivity() {
                 movie = movieDetailViewModel.getMovieByTitle(extras.getString("movie_title", ""))
                 populateDetails()
             }
-            else if (extras.containsKey("movie_id")){
+            else if (extras.containsKey("movie_id") && !extras.containsKey("exists") ){
                 movieDetailViewModel.getMovie(extras.getLong("movie_id"),onSuccess = ::onSuccess,
-                        onError = ::onError )
+                    onError = ::onError )
+            }
+            else if (extras.containsKey("movie_id") && extras.containsKey("exists") ){
+                movieDetailViewModel.getMovieFromDB(applicationContext,extras.getLong("movie_id"),onSuccess = ::onSuccess,
+                    onError = ::onError )
+                addFavorite.visibility= View.GONE
+                deleteFavorite.visibility = View.VISIBLE
             }
         } else {
             finish()
         }
     }
 
-    fun onSuccess(movie:Movie){
+    fun onSuccess(movie: Movie){
         this.movie =movie;
         populateDetails()
     }
@@ -97,39 +124,42 @@ class MovieDetailActivity : AppCompatActivity() {
         val toast = Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT)
         toast.show()
     }
-    fun movieRetrieved(movie:Movie){
-        this.movie =movie;
-        populateDetails()
+
+    fun writeDB(){
+        movieDetailViewModel.writeDB(applicationContext,this.movie,onSuccess = ::onSuccess1,
+            onError = ::onError)
     }
 
-    private fun populateDetails() {
+    fun deleteDB(){
+        movieDetailViewModel.deleteDB(applicationContext,this.movie,onSuccess = ::onSuccess1, onError = ::onError)
+    }
+    fun onSuccess1(message:String){
+        val toast = Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT)
+        toast.show()
+        addFavorite.visibility= View.GONE
+        deleteFavorite.visibility = View.VISIBLE
 
+    }
+    private fun populateDetails() {
         title.text=movie.title
         releaseDate.text=movie.releaseDate
         website.text=movie.homepage
         overview.text=movie.overview
         val context: Context = poster.getContext()
-
-        /*var id: Int = context.getResources()
-            .getIdentifier(movie.genre, "drawable", context.getPackageName())
-        if (id===0) id=context.getResources()
-            .getIdentifier("picture1", "drawable", context.getPackageName())
-        poster.setImageResource(id) -- do vjezbe 5*/
-
         Glide.with(context)
-                .load(posterPath + movie.posterPath)
-                .placeholder(R.drawable.picture1)
-                .error(R.drawable.picture1)
-                .fallback(R.drawable.picture1)
-                .into(poster);
+            .load(posterPath + movie.posterPath)
+            .placeholder(R.drawable.picture1)
+            .error(R.drawable.picture1)
+            .fallback(R.drawable.picture1)
+            .into(poster);
         var backdropContext: Context = backdrop.getContext()
         Glide.with(backdropContext)
-                .load(backdropPath + movie.backdropPath)
-                .centerCrop()
-                .placeholder(R.drawable.backdrop)
-                .error(R.drawable.backdrop)
-                .fallback(R.drawable.backdrop)
-                .into(backdrop);
+            .load(backdropPath + movie.backdropPath)
+            .centerCrop()
+            .placeholder(R.drawable.backdrop)
+            .error(R.drawable.backdrop)
+            .fallback(R.drawable.backdrop)
+            .into(backdrop);
     }
 
     private fun showWebsite(){

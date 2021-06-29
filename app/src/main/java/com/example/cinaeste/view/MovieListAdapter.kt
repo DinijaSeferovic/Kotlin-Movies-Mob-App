@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.cinaeste.R
-import com.example.cinaeste.data.Movie
+import com.example.cinaeste.data.model.Movie
 
 
 class MovieListAdapter(
@@ -52,4 +52,3 @@ class MovieListAdapter(
 
     }
 }
-

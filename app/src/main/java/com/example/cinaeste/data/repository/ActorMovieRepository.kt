@@ -1,15 +1,11 @@
-package com.example.cinaeste.data
+package com.example.cinaeste.data.repository
 
 import com.example.cinaeste.BuildConfig
+import com.example.cinaeste.data.api.ApiAdapter
+import com.example.cinaeste.data.response.GetCastResponse
+import com.example.cinaeste.data.movieActors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.MalformedURLException
-import java.net.URL
 
 object ActorMovieRepository {
 
