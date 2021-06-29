@@ -19,8 +19,7 @@ sealed class Result<out R> {
 
 object MovieRepository {
 
-    private const val tmdb_api_key : String = BuildConfig.TMDB_API_KEY
-
+    private const val tmdb_api_key = BuildConfig.TMDB_API_KEY
     fun getFavoriteMovies() : List<Movie> {
         return favoriteMovies();
     }
@@ -33,9 +32,10 @@ object MovieRepository {
         return similarMovies()
     }
 
-    suspend fun getMovieDetails(id: Long):Result<Movie>{
-
-        return withContext(context = Dispatchers.IO) {
+    suspend fun getMovieDetails(
+            id: Long
+    ):Result<Movie>{
+        return withContext(Dispatchers.IO) {
             val url1 = "https://api.themoviedb.org/3/movie/$id?api_key=$tmdb_api_key"
             try {
                 val url = URL(url1)
@@ -64,8 +64,9 @@ object MovieRepository {
         }
     }
 
-    suspend fun getSimilarMoviesAPI(id: Long): Result<MutableList<String>> {
-
+    suspend fun getSimilarMoviesAPI(
+            id: Long
+    ): Result<MutableList<String>> {
         return withContext(Dispatchers.IO) {
             val url1 = "https://api.themoviedb.org/3/movie/$id/similar?api_key=$tmdb_api_key"
             try {
@@ -94,12 +95,14 @@ object MovieRepository {
         }
     }
 
-    suspend fun searchRequest(query: String): Result<List<Movie>>{
-
+    suspend fun searchRequest(
+            query: String
+    ): Result<List<Movie>>{
         return withContext(Dispatchers.IO) {
             try {
                 val movies = arrayListOf<Movie>()
-                val url1 = "https://api.themoviedb.org/3/search/movie?api_key=$tmdb_api_key&query=$query"
+                val url1 =
+                        "https://api.themoviedb.org/3/search/movie?api_key=$tmdb_api_key&query=$query"
                 val url = URL(url1)
                 (url.openConnection() as? HttpURLConnection)?.run {
                     val result = this.inputStream.bufferedReader().use { it.readText() }
@@ -128,6 +131,4 @@ object MovieRepository {
 
         }
     }
-
-
 }

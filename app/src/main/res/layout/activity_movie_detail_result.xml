@@ -1,15 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".MovieDetailResultActivity">
+
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/detailNavigation"
+        app:layout_constraintBottom_toBottomOf= "parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         >
@@ -105,7 +108,7 @@
                 android:layout_height="wrap_content"
                 app:barrierDirection="bottom"
                 app:constraint_referenced_ids="movie_release_date,movie_poster_card,movie_genre,movie_website"
-                />
+                tools:layout_editor_absoluteY="362dp" />
 
             <TextView
                 android:id="@+id/movie_overview"
@@ -121,51 +124,7 @@
                 tools:textSize="16sp" />
 
 
-
-
-            <FrameLayout
-                android:id="@+id/actorSimilarContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/movie_overview">
-
-            </FrameLayout>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/shareButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/highlightColor"
-        android:clickable="true"
-        android:elevation="15dp"
-        android:src="@android:drawable/ic_menu_share"
-        android:tint="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@id/detailNavigation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.89"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.95" />
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/detailNavigation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:itemBackground="@color/primaryDarkColor"
-        android:background="@color/primaryDarkColor"
-        app:itemIconTint="@color/navigation_selected"
-        app:itemTextColor="@color/navigation_selected"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        android:translationZ="10dp"
-        app:menu="@menu/actors_similar_movies" />
 </androidx.constraintlayout.widget.ConstraintLayout>

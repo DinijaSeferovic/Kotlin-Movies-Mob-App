@@ -1,15 +1,19 @@
 package com.example.cinaeste
 
-import SearchFragment
 import android.content.BroadcastReceiver
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
+import android.transition.Explode
 import android.transition.Fade
+import android.transition.Slide
 import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
+import com.example.cinaeste.data.Movie
+import com.example.cinaeste.services.LatestMovieService
 import com.example.cinaeste.view.FavoriteMoviesFragment
 import com.example.cinaeste.view.RecentMoviesFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -64,8 +68,15 @@ class MainActivity : AppCompatActivity() {
         if(intent?.action == Intent.ACTION_SEND && intent?.type == "text/plain")
             handleSendText(intent)
 
-    }
+        Intent(this, LatestMovieService::class.java).also {
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(it)
+                return
+            }
+            startService(it)
+        }
+    }
 
     private fun openFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()

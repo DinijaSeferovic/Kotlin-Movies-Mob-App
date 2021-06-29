@@ -1,3 +1,4 @@
+
 package com.example.cinaeste.data
 
 import com.example.cinaeste.BuildConfig
@@ -12,17 +13,19 @@ import java.net.MalformedURLException
 import java.net.URL
 
 object ActorMovieRepository {
+
     /*fun getActorMovies():Map<String,List<String>>{
         return movieActors()
     } -- do vjezbe 5*/
 
-    private const val tmdb_api_key : String = BuildConfig.TMDB_API_KEY
+    private const val tmdb_api_key = BuildConfig.TMDB_API_KEY
     fun getActorMovies():Map<String,List<String>>{
         return movieActors()
     }
 
-    suspend fun getActors(id: Long): Result<MutableList<String>> {
-
+    suspend fun getActors(
+            id: Long
+    ): Result<MutableList<String>> {
         return withContext(Dispatchers.IO) {
             val url1 = "https://api.themoviedb.org/3/movie/$id/credits?api_key=${tmdb_api_key}"
             try {
@@ -50,4 +53,6 @@ object ActorMovieRepository {
             }
         }
     }
+
 }
+
