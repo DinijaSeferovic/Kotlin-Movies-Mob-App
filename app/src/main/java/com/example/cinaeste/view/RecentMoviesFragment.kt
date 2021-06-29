@@ -3,6 +3,7 @@ package com.example.cinaeste.view
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
+import android.util.Pair as UtilPair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +20,7 @@ class RecentMoviesFragment : Fragment() {
 
     private lateinit var recentMovies: RecyclerView
     private lateinit var recentMoviesAdapter: MovieListAdapter
-    private var movieListViewModel =  MovieListViewModel()
+    private lateinit var movieListViewModel: MovieListViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,7 +36,9 @@ class RecentMoviesFragment : Fragment() {
               onSuccess = ::onSuccess,
               onError = ::onError
           )*/
-        movieListViewModel.getUpcoming2( onSuccess = ::onSuccess,
+
+        context?.let { movieListViewModel= MovieListViewModel(it) }
+        movieListViewModel!!.getUpcoming2( onSuccess = ::onSuccess,
             onError = ::onError)
         return view;
     }
