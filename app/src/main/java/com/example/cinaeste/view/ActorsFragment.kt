@@ -4,36 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cinaeste.R
+import com.example.cinaeste.data.Cast
+import com.example.cinaeste.data.Movie
 import com.example.cinaeste.viewmodel.MovieDetailViewModel
 
-class ActorsFragment(movieName:String, movieId:Long?) : Fragment() {
-    /*private var movieDetailViewModel =  MovieDetailViewModel()
-    private var movieName:String = movieName
-
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
-        var view:View = inflater.inflate(R.layout.actors_fragment, container, false)
-        var actorsList = movieDetailViewModel.getActorsByTitle(movieName)
-        var actorsRV = view.findViewById<RecyclerView>(R.id.listActors)
-        actorsRV.layoutManager = LinearLayoutManager(activity)
-        var actorsRVSimpleAdapter = SimpleStringAdapter(actorsList)
-        actorsRV.adapter = actorsRVSimpleAdapter
-        return view
-    } --do vjezbe 5*/
-
+class ActorsFragment(movieName:String,movieId:Long?): Fragment() {
     private var movieName:String = movieName
     private var movieId:Long? = movieId
     private lateinit var movieRV:RecyclerView
-    private var actorsList= listOf<String>()
-    private lateinit var actorsRVSimpleAdapter:SimpleStringAdapter
-    private var movieDetailViewModel =  MovieDetailViewModel(null,null, this@ActorsFragment::actorsRetrieved)
+    private var actorsList= listOf<Cast>()
+    private lateinit var actorsRVSimpleSimilarAdapter:SimpleCastStringAdapter
+    private var movieDetailViewModel =  MovieDetailViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,18 +28,23 @@ class ActorsFragment(movieName:String, movieId:Long?) : Fragment() {
     ): View? {
         var view: View = inflater.inflate(R.layout.actors_fragment, container, false)
         movieRV = view.findViewById<RecyclerView>(R.id.listActors)
-        actorsList = movieName?.let { movieDetailViewModel.getActorsByTitle(it) }!!
+        //   actorsList = movieName?.let { movieDetailViewModel.getActorsByTitle(it) }!!
         movieRV.layoutManager = LinearLayoutManager(activity)
-        actorsRVSimpleAdapter = SimpleStringAdapter(actorsList)
-        movieRV.adapter = actorsRVSimpleAdapter
-        movieId?.let { movieDetailViewModel.getActorsById(it) }
+        actorsRVSimpleSimilarAdapter = SimpleCastStringAdapter(actorsList)
+        movieRV.adapter = actorsRVSimpleSimilarAdapter
+        movieId?.let { movieDetailViewModel.getActorsById(it,onSuccess = ::onSuccess,
+            onError = ::onError) }
         return view
     }
 
-    fun actorsRetrieved(actors:MutableList<String>){
+    fun onSuccess(actors:List<Cast>){
         actorsList=actors
-        actorsRVSimpleAdapter.list=actors
-        actorsRVSimpleAdapter.notifyDataSetChanged();
+        actorsRVSimpleSimilarAdapter.list=actors
+        actorsRVSimpleSimilarAdapter.notifyDataSetChanged();
+    }
+    fun onError() {
+        val toast = Toast.makeText(context, "Search error", Toast.LENGTH_SHORT)
+        toast.show()
     }
 
 }

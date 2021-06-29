@@ -1,15 +1,13 @@
 package com.example.cinaeste.view
 
-import android.os.Parcel
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cinaeste.R
+import com.example.cinaeste.data.Movie
 
-class SimpleStringAdapter(list: List<String>) :RecyclerView.Adapter<SimpleStringAdapter.SimpleViewHolder>() {
+class SimpleSimilarStringAdapter(list: List<Movie>) :RecyclerView.Adapter<SimpleSimilarStringAdapter.SimpleViewHolder>() {
 
     var list = list
     inner class SimpleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -18,8 +16,8 @@ class SimpleStringAdapter(list: List<String>) :RecyclerView.Adapter<SimpleString
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder {
         val view = LayoutInflater
-                .from(parent.context)
-                .inflate(android.R.layout.simple_list_item_1, parent, false)
+            .from(parent.context)
+            .inflate(android.R.layout.simple_list_item_1, parent, false)
         return SimpleViewHolder(view)
     }
 
@@ -28,6 +26,6 @@ class SimpleStringAdapter(list: List<String>) :RecyclerView.Adapter<SimpleString
     }
 
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
-        holder.textElement.text=list[position]
+        holder.textElement.text=list[position].title
     }
 }

@@ -14,6 +14,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.example.cinaeste.BuildConfig
 import com.example.cinaeste.MainActivity
 import com.example.cinaeste.MovieDetailResultActivity
+import com.example.cinaeste.data.ApiAdapter
 import com.example.cinaeste.data.Movie
 import kotlinx.coroutines.*
 import org.json.JSONException
@@ -27,7 +28,7 @@ class LatestMovieService : Service() {
     private var wakeLock: PowerManager.WakeLock? = null
     private var isServiceStarted = false
     private val tmdb_api_key : String = BuildConfig.TMDB_API_KEY
-    private var movie = Movie(1,"test","test","test","test"," ","test","test")
+    private var movie = Movie(1,"test","test","test","test","test","test")
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -49,11 +50,11 @@ class LatestMovieService : Service() {
         isServiceStarted = true
 
         wakeLock =
-                (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
-                    newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LatestMovieService::lock").apply {
-                        acquire()
-                    }
+            (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
+                newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LatestMovieService::lock").apply {
+                    acquire()
                 }
+            }
 
         // we're starting a loop in a coroutine
         GlobalScope.launch(Dispatchers.IO) {
@@ -66,35 +67,22 @@ class LatestMovieService : Service() {
         }
     }
 
-    private fun getData() {
+
+    private suspend fun getData() {
         try {
-            val url1 =
-                    "https://api.themoviedb.org/3/movie/latest?api_key=${tmdb_api_key}"
-            val url = URL(url1)
-            (url.openConnection() as? HttpURLConnection)?.run {
-                val result = this.inputStream.bufferedReader().use { it.readText() }
-                val jsonObject = JSONObject(result)
-                movie.title = jsonObject.getString("title")
-                movie.id = jsonObject.getLong("id")
-                movie.releaseDate = jsonObject.getString("release_date")
-                movie.homepage = jsonObject.getString("homepage")
-                movie.overview = jsonObject.getString("overview")
-                if (!jsonObject.getBoolean("adult")) {
-                    movie.backdropPath = jsonObject.getString("backdrop_path")
-                    movie.posterPath = jsonObject.getString("poster_path")
-                }
-            }
+            var response = ApiAdapter.retrofit.getLatestMovie()
+            val movie = response.body()
             val notifyIntent = Intent(this, MovieDetailResultActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 putExtra("movie",movie)
             }
             val notifyPendingIntent = PendingIntent.getActivity(
-                    this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+                this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
             )
             val notification = NotificationCompat.Builder(baseContext, "LATEST MOVIE SERVICE CHANNEL").apply{
                 setSmallIcon(android.R.drawable.stat_notify_sync)
                 setContentTitle("New movie found")
-                setContentText(movie.title)
+                setContentText(movie!!.title)
                 setContentIntent(notifyPendingIntent)
                 setOngoing(false)
                 build()
@@ -117,9 +105,9 @@ class LatestMovieService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val channel = NotificationChannel(
-                    notificationChannelId,
-                    "Latest Movie notifications channel",
-                    NotificationManager.IMPORTANCE_HIGH
+                notificationChannelId,
+                "Latest Movie notifications channel",
+                NotificationManager.IMPORTANCE_HIGH
             ).let {
                 it.description = "Latest Movie Service channel"
                 it.enableLights(true)
@@ -133,15 +121,15 @@ class LatestMovieService : Service() {
 
 
         val builder: Notification.Builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Notification.Builder(
-                this,
-                notificationChannelId
+            this,
+            notificationChannelId
         ) else Notification.Builder(this)
 
         return builder
-                .setContentTitle("Finding latest film")
-                .setSmallIcon(android.R.drawable.ic_popup_sync)
-                .setTicker("Film")
-                .setPriority(Notification.PRIORITY_HIGH) // for under android 26 compatibility
-                .build()
+            .setContentTitle("Finding latest film")
+            .setSmallIcon(android.R.drawable.ic_popup_sync)
+            .setTicker("Film")
+            .setPriority(Notification.PRIORITY_HIGH) // for under android 26 compatibility
+            .build()
     }
 }

@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cinaeste.MovieDetailActivity
 import com.example.cinaeste.R
@@ -20,7 +19,7 @@ class FavoriteMoviesFragment : Fragment() {
 
     private lateinit var favoriteMovies: RecyclerView
     private lateinit var favoriteMoviesAdapter: MovieListAdapter
-    private var movieListViewModel =  MovieListViewModel(null,null)
+    private var movieListViewModel =  MovieListViewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view =  inflater.inflate(R.layout.favorites_fragment, container, false)

@@ -1,3 +1,5 @@
+package com.example.cinaeste.view
+
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
@@ -14,23 +16,26 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cinaeste.MovieDetailActivity
 import com.example.cinaeste.R
 import com.example.cinaeste.data.Movie
-import com.example.cinaeste.view.MovieListAdapter
 import com.example.cinaeste.viewmodel.MovieListViewModel
 
-
 class SearchFragment : Fragment() {
+
     private lateinit var searchText: EditText
     private lateinit var searchButton: AppCompatImageButton
     private lateinit var searchMovies: RecyclerView
     private lateinit var searchMoviesAdapter: MovieListAdapter
     private lateinit var movieListViewModel : MovieListViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         var view = inflater.inflate(R.layout.search_fragment, container, false)
         searchText = view.findViewById(R.id.searchText)
-        movieListViewModel = MovieListViewModel(this@SearchFragment::searchDone,this@SearchFragment::onError)
+        movieListViewModel = MovieListViewModel()
         searchButton = view.findViewById(R.id.searchButton)
-
         arguments?.getString("search")?.let {
             searchText.setText(it)
         }
@@ -47,10 +52,11 @@ class SearchFragment : Fragment() {
     private fun onClick() {
         val toast = Toast.makeText(context, "Search start", Toast.LENGTH_SHORT)
         toast.show()
-        movieListViewModel.search(searchText.text.toString())
+        movieListViewModel.search(searchText.text.toString(),onSuccess = ::onSuccess,
+            onError = ::onError)
     }
-    fun searchDone(movies:List<Movie>){
-        val toast = Toast.makeText(context, "Search done", Toast.LENGTH_SHORT)
+    fun onSuccess(movies:List<Movie>){
+        val toast = Toast.makeText(context, "Upcoming movies found", Toast.LENGTH_SHORT)
         toast.show()
         searchMoviesAdapter.updateMovies(movies)
     }
@@ -58,6 +64,7 @@ class SearchFragment : Fragment() {
         val toast = Toast.makeText(context, "Search error", Toast.LENGTH_SHORT)
         toast.show()
     }
+
     private fun showMovieDetails(movie: Movie, view1: View,view2:View) {
         val intent = Intent(activity, MovieDetailActivity::class.java).apply {
             putExtra("movie_id", movie.id)
@@ -67,7 +74,6 @@ class SearchFragment : Fragment() {
                 Pair.create(view2, "title"))
         startActivity(intent, options.toBundle())
     }
-
     companion object {
         fun newInstance(search:String): SearchFragment = SearchFragment().apply {
             arguments = Bundle().apply {

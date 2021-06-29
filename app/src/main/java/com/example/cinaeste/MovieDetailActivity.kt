@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -18,10 +19,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MovieDetailActivity : AppCompatActivity() {
 
-    //private var movieDetailViewModel =  MovieDetailViewModel()
-    private var movieDetailViewModel =  MovieDetailViewModel(this@MovieDetailActivity::movieRetrieved,null,null)
-    private  var movie=Movie(0,"Test","Test","Test","Test","Test","Test","Test")
+    private var movieDetailViewModel =  MovieDetailViewModel()
     private lateinit var bottomNavigation: BottomNavigationView
+    private  var movie=Movie(0,"Test","Test","Test","Test","Test","Test")
     private lateinit var title : TextView
     private lateinit var overview : TextView
     private lateinit var releaseDate : TextView
@@ -36,12 +36,12 @@ class MovieDetailActivity : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when(item.itemId){
             R.id.actorsItem -> {
-                var actorsFragment = ActorsFragment(movie.title, movie.id)
+                var actorsFragment = ActorsFragment(movie.title,movie.id)
                 openFragment(actorsFragment)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.similarMItem -> {
-                var similarFragment = SimilarFragment(movie.title, movie.id)
+                var similarFragment = SimilarFragment(movie.title,movie.id)
                 openFragment(similarFragment)
                 return@OnNavigationItemSelectedListener true
             }
@@ -56,7 +56,7 @@ class MovieDetailActivity : AppCompatActivity() {
         title = findViewById(R.id.movie_title)
         overview = findViewById(R.id.movie_overview)
         releaseDate = findViewById(R.id.movie_release_date)
-        genre = findViewById(R.id.movie_genre)
+        //genre = findViewById(R.id.movie_genre)
         poster = findViewById(R.id.movie_poster)
         website = findViewById(R.id.movie_website)
         shareButton = findViewById(R.id.shareButton)
@@ -74,48 +74,53 @@ class MovieDetailActivity : AppCompatActivity() {
             shareOverview()
         }
         val extras = intent.extras
+
         if (extras != null) {
             if (extras.containsKey("movie_title")) {
                 movie = movieDetailViewModel.getMovieByTitle(extras.getString("movie_title", ""))
                 populateDetails()
             }
             else if (extras.containsKey("movie_id")){
-                movieDetailViewModel.getMovieDetails(extras.getLong("movie_id"))
+                movieDetailViewModel.getMovie(extras.getLong("movie_id"),onSuccess = ::onSuccess,
+                        onError = ::onError )
             }
         } else {
             finish()
         }
-        bottomNavigation.selectedItemId = R.id.actorsItem
     }
 
+    fun onSuccess(movie:Movie){
+        this.movie =movie;
+        populateDetails()
+    }
+    fun onError() {
+        val toast = Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT)
+        toast.show()
+    }
     fun movieRetrieved(movie:Movie){
         this.movie =movie;
         populateDetails()
     }
 
     private fun populateDetails() {
+
         title.text=movie.title
         releaseDate.text=movie.releaseDate
-        genre.text=movie.genre
         website.text=movie.homepage
         overview.text=movie.overview
         val context: Context = poster.getContext()
+
         /*var id: Int = context.getResources()
             .getIdentifier(movie.genre, "drawable", context.getPackageName())
         if (id===0) id=context.getResources()
             .getIdentifier("picture1", "drawable", context.getPackageName())
         poster.setImageResource(id) -- do vjezbe 5*/
-        var id = 0;
-        if (movie.genre!==null)
-            id = context.getResources()
-                    .getIdentifier(movie.genre, "drawable", context.getPackageName())
-        if (id===0) id=context.getResources()
-                .getIdentifier("picture1", "drawable", context.getPackageName())
+
         Glide.with(context)
                 .load(posterPath + movie.posterPath)
                 .placeholder(R.drawable.picture1)
-                .error(id)
-                .fallback(id)
+                .error(R.drawable.picture1)
+                .fallback(R.drawable.picture1)
                 .into(poster);
         var backdropContext: Context = backdrop.getContext()
         Glide.with(backdropContext)
@@ -125,7 +130,6 @@ class MovieDetailActivity : AppCompatActivity() {
                 .error(R.drawable.backdrop)
                 .fallback(R.drawable.backdrop)
                 .into(backdrop);
-
     }
 
     private fun showWebsite(){
